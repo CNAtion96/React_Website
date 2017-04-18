@@ -1,31 +1,49 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router';
 import '../App.css';
+import axios from 'axios';
 
 class Vehicle extends Component {
-
+    constructor(props) {
+        super(props);
+        this.state = {
+            vehicles: [],
+        }
+    }
+    
+    componentDidMount(){
+        let _this = this;
+        axios.get('http://swapi.co/api/vehicles')
+        .then(function (response) {
+            _this.setState({vehicles: response.data.results});
+        })
+    }
     render(){
+        console.log(this.state.vehicles);
+        let vehicles;
+        if(this.state.vehicles){
+            vehicles = this.state.vehicles.map((vehicle) => {
+                return(<div className="col-md-12 content">
+                            <h3>{vehicle.name}</h3>
+                            <p><strong>Model</strong>: {vehicle.model}</p>
+                            <p><strong>Manufacturer</strong>: {vehicle.manufacturer}</p>
+                            <p><strong>Vehicle Class</strong>: {vehicle.vehicle_class}</p>
+                            <p><strong>Cargo Capacity</strong>: {vehicle.cargo_capacity}</p>
+                            <p><strong>Max Atmosphering Speed</strong>: {vehicle.max_atmosphering_speed}</p>
+                            <p><strong>Length</strong>: {vehicle.length}</p>
+                            <p><strong>Crew</strong>: {vehicle.crew}</p>
+                            <p><strong>Paseangers</strong>: {vehicle.passengers}</p>
+                            <p><strong>Consumables</strong>: {vehicle.consumables}</p>
+                            <p><strong>Cost in Credits</strong>: {vehicle.cost_in_credits}</p>
+                        </div>       
+                )
+                
+            });
+            console.log(vehicles);
+        }
         return (
             <div className="App">
-                    <div className="col-md-12 stars"></div>
-                    <div className="col-md-12 twinkling">
-                    <div>
-                            <h2>Starbrary</h2>
-                        
-                        <ul className="navigation">
-                                <li><Link to="/">Home</Link></li>
-                                <li><Link to="/films"> Films </Link></li>
-                                <li><Link to="/people"> People </Link></li>
-                                <li><Link to="/planets"> Planets </Link></li>
-                                <li><Link to="/species"> Species </Link></li>
-                                <li><Link to="/starships"> Starships </Link></li>
-                                <li><Link to="/vehicles">Vehicles</Link></li>
-                            </ul>
-                        </div>
-                        <div className="col-md-12 content">
-                             <p>Vehicles</p>
-                        </div>
-                    </div>
+                    {vehicles}
             </div>
         );
     }
